@@ -110,7 +110,7 @@ timer_sleep (int64_t ticks)
   old_level = intr_enable ();
   t = thread_current();
 
-  list_push_back(&sleep_thread_list, thread_current ())
+  // list_push_back(&sleep_thread_list, thread_current ())
 
   thread_block();
 
