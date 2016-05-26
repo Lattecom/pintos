@@ -30,6 +30,9 @@ static void busy_wait (int64_t loops);
 static void real_time_sleep (int64_t num, int32_t denom);
 static void real_time_delay (int64_t num, int32_t denom);
 
+/* sleep threads list */
+static struct list sleep_thread_list;
+
 /* Sets up the 8254 Programmable Interval Timer (PIT) to
    interrupt PIT_FREQ times per second, and registers the
    corresponding interrupt. */
@@ -45,6 +48,8 @@ timer_init (void)
   outb (0x40, count >> 8);
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
+
+  list_init(&sleep_thread_list);
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -99,10 +104,23 @@ void
 timer_sleep (int64_t ticks) 
 {
   int64_t start = timer_ticks ();
+  enum intr_level old_level;
+  struct thread *t;
 
+  old_level = intr_enable ();
+  t = thread_current();
+
+  list_push_back(&sleep_thread_list, thread_current ())
+
+  thread_block();
+
+  thread_unblock(t);
+  /*
   ASSERT (intr_get_level () == INTR_ON);
+  
   while (timer_elapsed (start) < ticks) 
     thread_yield ();
+  */
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
