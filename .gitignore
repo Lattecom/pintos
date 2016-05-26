@@ -1,6 +1,6 @@
 threads/bochsout.txt
 threads/bochsrc.txt
 threads/build/bochsout.txt
-threads/build/bochrc.txt
+threads/build/bochsrc.txt
 threads/build/threads/loader.o
 threads/build/tests/threads/*
